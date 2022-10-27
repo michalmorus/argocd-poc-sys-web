@@ -1,0 +1,16 @@
+FROM golang:1.19-alpine AS build_base
+
+WORKDIR /app
+
+USER root
+
+RUN apk add ca-certificates gcc g++ libc-dev git tzdata
+ENV TZ "Europe/Warsaw"
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+CMD go run github.com/cespare/reflex@latest -r "(\.go$|go\.mod)" -s go run "./cmd/main.go";
